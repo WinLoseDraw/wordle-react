@@ -12,12 +12,7 @@ const App = () => {
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
 
     const updateGuessGrid = (guessNumber: number, guessWord: string) => {
-        const updatedGuessMatrix = [...Array(guessRows)].map(() => Array(wordLength).fill(''))
-        for (let row = 0; row < guessNumber - 1; row++) {
-            for (let col = 0; col < wordLength; col++) {
-                updatedGuessMatrix[row][col] = guessGrid[row][col]
-            }
-        }
+        const updatedGuessMatrix = [...guessGrid]
         for (let col = 0; col < wordLength; col++) {
             updatedGuessMatrix[guessNumber - 1][col] = guessWord[col] ?? ''
         }
