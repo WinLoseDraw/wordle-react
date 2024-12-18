@@ -6,9 +6,9 @@ import {useState} from "react";
 import LetterStatus from "./utils/LetterStatus.ts";
 
 const App = () => {
-    const guessRows = 5
+    const guessRows = 6
     const wordLength = 5
-    const [guessGrid, setGuessGrid] = useState<string[][]>([...Array(guessRows)].map(() => Array(wordLength).fill('')))
+    const [guessGrid, setGuessGrid] = useState([...Array(guessRows)].map(() => Array(wordLength).fill('')))
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
 
     const updateGuessGrid = (guessNumber: number, guessWord: string) => {
@@ -42,6 +42,7 @@ const App = () => {
     const makeGuess = (guessNumber: number, correctWord: string, guessWord: string) => {
         const validationResult = validateGuess(correctWord, guessWord)
         console.log(validationResult)
+        if (guessNumber === guessRows) return
         setCurrentGuessNumber(guessNumber + 1)
     }
 
