@@ -8,14 +8,14 @@ const Keyboard = ({keyboardContent, currentGuessNumber, wordLength, updateGuessG
     currentGuessNumber: number,
     wordLength: number,
     updateGuessGridContent: (guessNumber: number, guessWord: string) => void,
-    makeGuess: (guessNumber: number, correctWord: string, guessWord: string) => void,
+    makeGuess: (guessWord: string) => void,
 }) => {
     const [currentGuess, setCurrentGuess] = useState('')
 
     const pressKey = (key: string) => {
         if (key === 'Enter') {
             if (currentGuess.length < wordLength) return;
-            makeGuess(currentGuessNumber, 'APPLE', currentGuess)
+            makeGuess(currentGuess)
             setCurrentGuess('')
             return
         }

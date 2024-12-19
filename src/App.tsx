@@ -9,6 +9,7 @@ import keyboardLayout from "./utils/KeyboardLayout.ts";
 const App = () => {
     const guessRows = 6
     const wordLength = 5
+    const correctWord = 'APPLE'
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
     const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(wordLength).fill(new StatusChar('', LetterStatus.UNUSED))))
     const [keyboardContent, setKeyboardContent] = useState<StatusChar[][]>(keyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
@@ -42,6 +43,7 @@ const App = () => {
     }
 
     const updateGuessGridContent = (guessNumber: number, guessWord: string) => {
+        if (guessNumber > guessRows) return
         const updatedGuessGrid = [...guessGridContent]
         for (let index = 0; index < guessWord.length; index++) {
             updatedGuessGrid[guessNumber - 1][index] = new StatusChar(guessWord[index], LetterStatus.UNUSED)
@@ -68,14 +70,31 @@ const App = () => {
         setKeyboardContent(updatedKeyboardContent)
     }
 
-    const makeGuess = (guessNumber: number, correctWord: string, guessWord: string) => {
+    const checkWin = (validationResult: StatusChar[]) => {
+        let win = true
+        for (const resultChar of validationResult) {
+            if (resultChar.status !== LetterStatus.CORRECT_POSITION) {
+                win = false
+                break
+            }
+        }
+        return win
+    }
+
+    const makeGuess = (guessWord: string) => {
         const validationResult = validateGuess(correctWord, guessWord)
         const updatedGuessGrid = [...guessGridContent]
-        updatedGuessGrid[guessNumber - 1] = [...validationResult]
+        updatedGuessGrid[currentGuessNumber - 1] = [...validationResult]
         setGuessGridContent(updatedGuessGrid)
         updateKeyboardContent(validationResult)
-        if (guessNumber === guessRows) return
-        setCurrentGuessNumber(guessNumber + 1)
+        if (checkWin(validationResult)) {
+            alert('YOU WIN!')
+            return
+        } else if (currentGuessNumber === guessRows) {
+            alert('HAHA LOSER!')
+            return
+        }
+        setCurrentGuessNumber(currentGuessNumber + 1)
     }
 
     return (
