@@ -5,7 +5,11 @@ export enum LetterStatus {
     CORRECT_POSITION,
 }
 
-export interface StatusChar {
+export class StatusChar {
     char: string
     status: LetterStatus
+    constructor(char: string, status: LetterStatus) {
+        this.char = char
+        this.status = status
+    }
 }

@@ -8,10 +8,7 @@ import {LetterStatus, StatusChar} from "./utils/Status.ts";
 const App = () => {
     const guessRows = 6
     const wordLength = 5
-    const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(wordLength).fill({
-        char: '',
-        status: LetterStatus.UNUSED
-    })))
+    const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(wordLength).fill(new StatusChar('', LetterStatus.UNUSED))))
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
 
     const updateGuessGridContent = (guessNumber: number, guessWord: string) => {
