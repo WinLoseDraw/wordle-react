@@ -1,23 +1,30 @@
 import './App.css'
 import Header from "./components/Header.tsx";
 import Keyboard from "./components/Keyboard.tsx";
-import Guesses from "./components/Guesses.tsx";
+import GuessGrid from "./components/GuessGrid.tsx";
 import {useState} from "react";
-import LetterStatus from "./utils/LetterStatus.ts";
+import {LetterStatus, StatusChar} from "./utils/Status.ts";
 
 const App = () => {
     const guessRows = 6
     const wordLength = 5
-    const [guessGrid, setGuessGrid] = useState([...Array(guessRows)].map(() => Array(wordLength).fill('')))
+    const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(wordLength).fill({
+        char: '',
+        status: LetterStatus.UNUSED
+    })))
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
 
-    const updateGuessGrid = (guessNumber: number, guessWord: string) => {
-        const updatedGuessMatrix = [...guessGrid]
+    const updateGuessGridContent = (guessNumber: number, guessWord: string) => {
+        const updatedGuessGrid = [...guessGridContent]
         for (let col = 0; col < wordLength; col++) {
-            updatedGuessMatrix[guessNumber - 1][col] = guessWord[col] ?? ''
+            updatedGuessGrid[guessNumber - 1][col] = {
+                char: guessWord[col] ?? '',
+                status: LetterStatus.UNUSED
+            }
         }
-        setGuessGrid(updatedGuessMatrix)
+        setGuessGridContent(updatedGuessGrid)
     }
+
 
     const validateGuess = (correctWord: string, guessWord: string) => {
         const result = new Array<LetterStatus>(wordLength)
@@ -41,7 +48,13 @@ const App = () => {
 
     const makeGuess = (guessNumber: number, correctWord: string, guessWord: string) => {
         const validationResult = validateGuess(correctWord, guessWord)
-        console.log(validationResult)
+        const updatedGuessGrid = [...guessGridContent]
+        for (let col = 0; col < wordLength; col++) {
+            updatedGuessGrid[guessNumber - 1][col] = {
+                char: guessGridContent[guessNumber - 1][col].char,
+                status: validationResult[col]
+            }
+        }
         if (guessNumber === guessRows) return
         setCurrentGuessNumber(guessNumber + 1)
     }
@@ -49,9 +62,10 @@ const App = () => {
     return (
         <>
             <Header/>
-            <Guesses guessGrid={guessGrid}/>
-            <Keyboard currentGuessNumber={currentGuessNumber} wordLength={wordLength}
-                      updateGuessGrid={updateGuessGrid}
+            <GuessGrid guessGridContent={guessGridContent}/>
+            <Keyboard currentGuessNumber={currentGuessNumber}
+                      wordLength={wordLength}
+                      updateGuessGridContent={updateGuessGridContent}
                       makeGuess={makeGuess}/>
         </>
     )

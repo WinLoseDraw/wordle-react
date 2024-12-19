@@ -2,10 +2,10 @@ import './Keyboard.css'
 import {useState} from "react";
 
 
-const Keyboard = ({currentGuessNumber, wordLength, updateGuessGrid, makeGuess}: {
+const Keyboard = ({currentGuessNumber, wordLength, updateGuessGridContent, makeGuess}: {
     currentGuessNumber: number,
     wordLength: number,
-    updateGuessGrid: (guessNumber: number, guessWord: string) => void,
+    updateGuessGridContent: (guessNumber: number, guessWord: string) => void,
     makeGuess: (guessNumber: number, correctWord: string, guessWord: string) => void,
 }) => {
     const [currentGuess, setCurrentGuess] = useState('')
@@ -21,7 +21,7 @@ const Keyboard = ({currentGuessNumber, wordLength, updateGuessGrid, makeGuess}: 
         const updatedGuess = (key === 'Delete') ? currentGuess.slice(0, -1) : currentGuess + key
         if (updatedGuess.length > wordLength) return
         setCurrentGuess(updatedGuess)
-        updateGuessGrid(currentGuessNumber, updatedGuess)
+        updateGuessGridContent(currentGuessNumber, updatedGuess)
     }
 
     const generateLayout = () => {
