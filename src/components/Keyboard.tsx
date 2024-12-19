@@ -1,8 +1,10 @@
 import './Keyboard.css'
 import {useState} from "react";
+import {StatusChar} from "../utils/Status.ts";
 
 
-const Keyboard = ({currentGuessNumber, wordLength, updateGuessGridContent, makeGuess}: {
+const Keyboard = ({keyboardContent, currentGuessNumber, wordLength, updateGuessGridContent, makeGuess}: {
+    keyboardContent: StatusChar[][],
     currentGuessNumber: number,
     wordLength: number,
     updateGuessGridContent: (guessNumber: number, guessWord: string) => void,
@@ -24,24 +26,16 @@ const Keyboard = ({currentGuessNumber, wordLength, updateGuessGridContent, makeG
         updateGuessGridContent(currentGuessNumber, updatedGuess)
     }
 
-    const generateLayout = () => {
-        const keyboardLayout = [
-            ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-            ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-            ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Delete', 'Enter']
-        ]
-        return keyboardLayout.map((row, index) => (
-            <div className='keyboard-row' key={index}>
-                {row.map((key, index) => (
-                    <button className='keyboard-key' key={index} onClick={() => pressKey(key)}>{key}</button>
-                ))}
-            </div>
-        ))
-    }
-
     return (
         <div className='keyboard'>
-            {generateLayout()}
+            {keyboardContent.map((keyboardRow, index) => (
+                <div className='keyboard-row' key={index}>
+                    {keyboardRow.map((keyboardKey, index) => (
+                        <button className='keyboard-key' key={index} style={{backgroundColor: keyboardKey.getColor()}}
+                                onClick={() => pressKey(keyboardKey.char)}>{keyboardKey.char}</button>
+                    ))}
+                </div>
+            ))}
         </div>
     )
 }

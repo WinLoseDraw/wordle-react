@@ -4,14 +4,14 @@ import Keyboard from "./components/Keyboard.tsx";
 import GuessGrid from "./components/GuessGrid.tsx";
 import {useState} from "react";
 import {LetterStatus, StatusChar} from "./utils/Status.ts";
-// import keyboardLayout from "./utils/KeyboardLayout.ts";
+import keyboardLayout from "./utils/KeyboardLayout.ts";
 
 const App = () => {
     const guessRows = 6
     const wordLength = 5
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
     const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(wordLength).fill(new StatusChar('', LetterStatus.UNUSED))))
-    // const [keyboardContent, setKeyboardContent] = useState<StatusChar[][]>(keyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
+    const [keyboardContent, setKeyboardContent] = useState<StatusChar[][]>(keyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
 
     const validateGuess = (correctWord: string, guessWord: string) => {
         const result = guessWord.split('').map(char => new StatusChar(char, LetterStatus.UNUSED))
@@ -49,18 +49,31 @@ const App = () => {
         setGuessGridContent(updatedGuessGrid)
     }
 
-    // const updateKeyboardContent = (guessWord: string, validationResult: LetterStatus[]) => {
-    //     const updatedKeyboardContent = [...keyboardContent]
-    //     for (let col = 0; col < wordLength; col++) {
-    //
-    //     }
-    // }
+    const updateKeyboardContent = (validationResult: StatusChar[]) => {
+        const updatedKeyboardContent = [...keyboardContent]
+        const charStatusMap = new Map<string, LetterStatus>()
+        for (let index = 0; index < validationResult.length; index++) {
+            const guessChar = validationResult[index].char
+            if (charStatusMap.has(guessChar) && charStatusMap.get(guessChar) === LetterStatus.CORRECT_POSITION) continue
+            charStatusMap.set(guessChar, validationResult[index].status)
+        }
+        for (let row = 0; row < keyboardContent.length; row++) {
+            for (let col = 0; col < keyboardContent[row].length; col++) {
+                const keyboardChar = keyboardContent[row][col].char
+                if (charStatusMap.has(keyboardChar)) {
+                    keyboardContent[row][col] = new StatusChar(keyboardChar, charStatusMap.get(keyboardChar) ?? LetterStatus.UNUSED)
+                }
+            }
+        }
+        setKeyboardContent(updatedKeyboardContent)
+    }
 
     const makeGuess = (guessNumber: number, correctWord: string, guessWord: string) => {
         const validationResult = validateGuess(correctWord, guessWord)
         const updatedGuessGrid = [...guessGridContent]
         updatedGuessGrid[guessNumber - 1] = [...validationResult]
         setGuessGridContent(updatedGuessGrid)
+        updateKeyboardContent(validationResult)
         if (guessNumber === guessRows) return
         setCurrentGuessNumber(guessNumber + 1)
     }
@@ -69,7 +82,8 @@ const App = () => {
         <>
             <Header/>
             <GuessGrid guessGridContent={guessGridContent}/>
-            <Keyboard currentGuessNumber={currentGuessNumber}
+            <Keyboard keyboardContent={keyboardContent}
+                      currentGuessNumber={currentGuessNumber}
                       wordLength={wordLength}
                       updateGuessGridContent={updateGuessGridContent}
                       makeGuess={makeGuess}/>
