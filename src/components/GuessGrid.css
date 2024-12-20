@@ -12,11 +12,13 @@
 
 .guess-tile {
     margin: 4px;
-    border: 1px solid black;
-    border-radius: 5px;
+    border: 1px solid #707070;
+    color: #fafafa;
     width: 60px;
     height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
 }

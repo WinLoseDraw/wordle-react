@@ -9,12 +9,11 @@ import MessageBar from "./components/MessageBar.tsx";
 
 const App = () => {
     const guessRows = 6
-    const wordLength = 5
     const correctWord = 'APPLE'
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
     const [keyboardEnabled, setKeyboardEnabled] = useState<boolean>(true)
     const [message, setMessage] = useState<string>('')
-    const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(wordLength).fill(new StatusChar('', LetterStatus.UNUSED))))
+    const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(correctWord.length).fill(new StatusChar('', LetterStatus.UNUSED))))
     const [keyboardContent, setKeyboardContent] = useState<StatusChar[][]>(keyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
 
     const validateGuess = (correctWord: string, guessWord: string) => {
@@ -24,7 +23,7 @@ const App = () => {
             correctFrequencyMap.set(character, (correctFrequencyMap.get(character) ?? 0) + 1)
         }
         const correctIndices = new Set<number>()
-        for (let index = 0; index < wordLength; index++) {
+        for (let index = 0; index < correctWord.length; index++) {
             const guessChar = guessWord[index]
             if (guessChar === correctWord[index]) {
                 result[index].status = LetterStatus.CORRECT_POSITION
@@ -32,7 +31,7 @@ const App = () => {
                 correctFrequencyMap.set(guessChar, (correctFrequencyMap.get(guessChar) ?? 1) - 1)
             }
         }
-        for (let index = 0; index < wordLength; index++) {
+        for (let index = 0; index < correctWord.length; index++) {
             if (correctIndices.has(index)) continue
             const guessChar = guessWord[index]
             if ((correctFrequencyMap.get(guessChar) ?? 0) > 0) {
@@ -47,7 +46,7 @@ const App = () => {
 
     const updateGuessGridContent = (guessNumber: number, guessWord: string) => {
         const updatedGuessGrid = [...guessGridContent]
-        for (let index = 0; index < wordLength; index++) {
+        for (let index = 0; index < correctWord.length; index++) {
             updatedGuessGrid[guessNumber - 1][index] = new StatusChar(guessWord[index] ?? '', LetterStatus.UNUSED)
         }
         setGuessGridContent(updatedGuessGrid)
@@ -99,17 +98,17 @@ const App = () => {
     }
 
     return (
-        <div className='app'>
+        <>
             <Header/>
             <GuessGrid guessGridContent={guessGridContent}/>
             <MessageBar message={message}/>
             <Keyboard keyboardContent={keyboardContent}
                       keyboardEnabled={keyboardEnabled}
                       currentGuessNumber={currentGuessNumber}
-                      wordLength={wordLength}
+                      wordLength={correctWord.length}
                       updateGuessGridContent={updateGuessGridContent}
                       makeGuess={makeGuess}/>
-        </div>
+        </>
     )
 }
 

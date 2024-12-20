@@ -1,5 +1,6 @@
 .message-bar {
-    margin: 10px;
+    color: white;
+    margin: 15px;
     display: flex;
     flex-direction: row;
     align-items: center;

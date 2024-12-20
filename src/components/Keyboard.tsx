@@ -1,6 +1,7 @@
 import './Keyboard.css'
 import {useEffect, useState} from "react";
-import {StatusChar} from "../utils/StatusChar.ts";
+import {LetterStatus, StatusChar} from "../utils/StatusChar.ts";
+import Colors from "../utils/Colors.ts";
 
 
 const Keyboard = ({keyboardContent, keyboardEnabled, currentGuessNumber, wordLength, updateGuessGridContent, makeGuess}: {
@@ -46,12 +47,25 @@ const Keyboard = ({keyboardContent, keyboardEnabled, currentGuessNumber, wordLen
         updateGuessGridContent(currentGuessNumber, updatedGuess)
     }
 
+    const getKeyColor = (status: LetterStatus) => {
+        switch (status) {
+            case LetterStatus.UNUSED:
+                return Colors.defaultKeyboardKey
+            case LetterStatus.ABSENT:
+                return Colors.absentKeyboardKey
+            case LetterStatus.INCORRECT_POSITION:
+                return Colors.incorrectPosition
+            case LetterStatus.CORRECT_POSITION:
+                return Colors.correctPosition
+        }
+    }
+
     return (
         <div className='keyboard'>
             {keyboardContent.map((keyboardRow, index) => (
                 <div className='keyboard-row' key={index}>
                     {keyboardRow.map((keyboardKey, index) => (
-                        <button className='keyboard-key' key={index} style={{backgroundColor: keyboardKey.getColor()}}
+                        <button className='keyboard-key' key={index} style={{backgroundColor: getKeyColor(keyboardKey.status)}}
                                 onClick={() => pressKey(keyboardKey.char)}>{keyboardKey.char}</button>
                     ))}
                 </div>
