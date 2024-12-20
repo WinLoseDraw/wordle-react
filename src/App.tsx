@@ -45,8 +45,8 @@ const App = () => {
     const updateGuessGridContent = (guessNumber: number, guessWord: string) => {
         if (guessNumber > guessRows) return
         const updatedGuessGrid = [...guessGridContent]
-        for (let index = 0; index < guessWord.length; index++) {
-            updatedGuessGrid[guessNumber - 1][index] = new StatusChar(guessWord[index], LetterStatus.UNUSED)
+        for (let index = 0; index < wordLength; index++) {
+            updatedGuessGrid[guessNumber - 1][index] = new StatusChar(guessWord[index] ?? '', LetterStatus.UNUSED)
         }
         setGuessGridContent(updatedGuessGrid)
     }
