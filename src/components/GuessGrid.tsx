@@ -1,5 +1,5 @@
 import './GuessGrid.css'
-import {StatusChar} from "../utils/Status.ts";
+import {StatusChar} from "../utils/StatusChar.ts";
 
 const GuessGrid = ({guessGridContent}: { guessGridContent: StatusChar[][] }) => {
     return (

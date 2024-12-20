@@ -3,7 +3,7 @@ import Header from "./components/Header.tsx";
 import Keyboard from "./components/Keyboard.tsx";
 import GuessGrid from "./components/GuessGrid.tsx";
 import {useState} from "react";
-import {LetterStatus, StatusChar} from "./utils/Status.ts";
+import {LetterStatus, StatusChar} from "./utils/StatusChar.ts";
 import keyboardLayout from "./utils/KeyboardLayout.ts";
 
 const App = () => {
@@ -11,6 +11,7 @@ const App = () => {
     const wordLength = 5
     const correctWord = 'APPLE'
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
+    const [keyboardEnabled, setKeyboardEnabled] = useState<boolean>(true)
     const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(wordLength).fill(new StatusChar('', LetterStatus.UNUSED))))
     const [keyboardContent, setKeyboardContent] = useState<StatusChar[][]>(keyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
 
@@ -43,7 +44,6 @@ const App = () => {
     }
 
     const updateGuessGridContent = (guessNumber: number, guessWord: string) => {
-        if (guessNumber > guessRows) return
         const updatedGuessGrid = [...guessGridContent]
         for (let index = 0; index < wordLength; index++) {
             updatedGuessGrid[guessNumber - 1][index] = new StatusChar(guessWord[index] ?? '', LetterStatus.UNUSED)
@@ -88,11 +88,11 @@ const App = () => {
         setGuessGridContent(updatedGuessGrid)
         updateKeyboardContent(validationResult)
         if (checkWin(validationResult)) {
-            alert('YOU WIN!')
-            return
+            // TODO: Show win
+            setKeyboardEnabled(false)
         } else if (currentGuessNumber === guessRows) {
-            alert('HAHA LOSER!')
-            return
+            // TODO: Show loss
+            setKeyboardEnabled(false)
         }
         setCurrentGuessNumber(currentGuessNumber + 1)
     }
@@ -102,6 +102,7 @@ const App = () => {
             <Header/>
             <GuessGrid guessGridContent={guessGridContent}/>
             <Keyboard keyboardContent={keyboardContent}
+                      keyboardEnabled={keyboardEnabled}
                       currentGuessNumber={currentGuessNumber}
                       wordLength={wordLength}
                       updateGuessGridContent={updateGuessGridContent}

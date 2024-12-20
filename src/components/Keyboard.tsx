@@ -1,10 +1,11 @@
 import './Keyboard.css'
 import {useEffect, useState} from "react";
-import {StatusChar} from "../utils/Status.ts";
+import {StatusChar} from "../utils/StatusChar.ts";
 
 
-const Keyboard = ({keyboardContent, currentGuessNumber, wordLength, updateGuessGridContent, makeGuess}: {
+const Keyboard = ({keyboardContent, keyboardEnabled, currentGuessNumber, wordLength, updateGuessGridContent, makeGuess}: {
     keyboardContent: StatusChar[][],
+    keyboardEnabled: boolean,
     currentGuessNumber: number,
     wordLength: number,
     updateGuessGridContent: (guessNumber: number, guessWord: string) => void,
@@ -31,8 +32,9 @@ const Keyboard = ({keyboardContent, currentGuessNumber, wordLength, updateGuessG
     const [currentGuess, setCurrentGuess] = useState('')
 
     const pressKey = (key: string) => {
+        if (!keyboardEnabled) return
         if (key === 'Enter') {
-            if (currentGuess.length < wordLength) return;
+            if (currentGuess.length < wordLength) return
             makeGuess(currentGuess)
             setCurrentGuess('')
             return
