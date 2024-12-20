@@ -5,6 +5,7 @@ import GuessGrid from "./components/GuessGrid.tsx";
 import {useState} from "react";
 import {LetterStatus, StatusChar} from "./utils/StatusChar.ts";
 import keyboardLayout from "./utils/KeyboardLayout.ts";
+import MessageBar from "./components/MessageBar.tsx";
 
 const App = () => {
     const guessRows = 6
@@ -12,6 +13,7 @@ const App = () => {
     const correctWord = 'APPLE'
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
     const [keyboardEnabled, setKeyboardEnabled] = useState<boolean>(true)
+    const [message, setMessage] = useState<string>('')
     const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(wordLength).fill(new StatusChar('', LetterStatus.UNUSED))))
     const [keyboardContent, setKeyboardContent] = useState<StatusChar[][]>(keyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
 
@@ -88,26 +90,26 @@ const App = () => {
         setGuessGridContent(updatedGuessGrid)
         updateKeyboardContent(validationResult)
         if (checkWin(validationResult)) {
-            // TODO: Show win
             setKeyboardEnabled(false)
         } else if (currentGuessNumber === guessRows) {
-            // TODO: Show loss
+            setMessage(`${correctWord}`)
             setKeyboardEnabled(false)
         }
         setCurrentGuessNumber(currentGuessNumber + 1)
     }
 
     return (
-        <>
+        <div className='app'>
             <Header/>
             <GuessGrid guessGridContent={guessGridContent}/>
+            <MessageBar message={message}/>
             <Keyboard keyboardContent={keyboardContent}
                       keyboardEnabled={keyboardEnabled}
                       currentGuessNumber={currentGuessNumber}
                       wordLength={wordLength}
                       updateGuessGridContent={updateGuessGridContent}
                       makeGuess={makeGuess}/>
-        </>
+        </div>
     )
 }
 
