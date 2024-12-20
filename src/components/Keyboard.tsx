@@ -1,5 +1,5 @@
 import './Keyboard.css'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {StatusChar} from "../utils/Status.ts";
 
 
@@ -10,6 +10,24 @@ const Keyboard = ({keyboardContent, currentGuessNumber, wordLength, updateGuessG
     updateGuessGridContent: (guessNumber: number, guessWord: string) => void,
     makeGuess: (guessWord: string) => void,
 }) => {
+
+    useEffect(() => {
+        const handleKeydown = (e: KeyboardEvent) => {
+            const pressedKey = e.key
+            if (pressedKey === 'Enter') {
+                pressKey('Enter')
+            } else if (pressedKey === 'Backspace') {
+                pressKey('Delete')
+            } else if (pressedKey.length === 1 && pressedKey.match(/^[a-zA-Z]+$/)) {
+                pressKey(pressedKey.toUpperCase())
+            }
+        }
+        document.addEventListener("keydown", handleKeydown)
+        return () => {
+            document.removeEventListener("keydown", handleKeydown)
+        }
+    })
+
     const [currentGuess, setCurrentGuess] = useState('')
 
     const pressKey = (key: string) => {
