@@ -4,17 +4,20 @@ import Keyboard from "./components/Keyboard.tsx";
 import GuessGrid from "./components/GuessGrid.tsx";
 import {useState} from "react";
 import {LetterStatus, StatusChar} from "./utils/StatusChar.ts";
-import keyboardLayout from "./utils/KeyboardLayout.ts";
+import KeyboardLayout from "./utils/KeyboardLayout.ts";
 import MessageBar from "./components/MessageBar.tsx";
+import {getRandomWord} from "./utils/Words.ts";
 
 const App = () => {
     const guessRows = 6
-    const correctWord = 'APPLE'
+    const defaultWordLength = 5
+    const [wordLength, setWordLength] = useState<number>(defaultWordLength)
+    const [correctWord, setCorrectWord] = useState<string>(getRandomWord(wordLength))
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
     const [keyboardEnabled, setKeyboardEnabled] = useState<boolean>(true)
     const [message, setMessage] = useState<string>('')
     const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(correctWord.length).fill(new StatusChar('', LetterStatus.UNUSED))))
-    const [keyboardContent, setKeyboardContent] = useState<StatusChar[][]>(keyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
+    const [keyboardContent, setKeyboardContent] = useState<StatusChar[][]>(KeyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
 
     const validateGuess = (correctWord: string, guessWord: string) => {
         const result = guessWord.split('').map(char => new StatusChar(char, LetterStatus.UNUSED))
@@ -46,7 +49,7 @@ const App = () => {
 
     const updateGuessGridContent = (guessNumber: number, guessWord: string) => {
         const updatedGuessGrid = [...guessGridContent]
-        for (let index = 0; index < correctWord.length; index++) {
+        for (let index = 0; index < wordLength; index++) {
             updatedGuessGrid[guessNumber - 1][index] = new StatusChar(guessWord[index] ?? '', LetterStatus.UNUSED)
         }
         setGuessGridContent(updatedGuessGrid)
@@ -105,7 +108,7 @@ const App = () => {
             <Keyboard keyboardContent={keyboardContent}
                       keyboardEnabled={keyboardEnabled}
                       currentGuessNumber={currentGuessNumber}
-                      wordLength={correctWord.length}
+                      wordLength={wordLength}
                       updateGuessGridContent={updateGuessGridContent}
                       makeGuess={makeGuess}/>
         </>
