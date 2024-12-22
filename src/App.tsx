@@ -17,9 +17,10 @@ const App = () => {
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
     const [keyboardEnabled, setKeyboardEnabled] = useState<boolean>(true)
     const [message, setMessage] = useState<string>('')
-    const [currentGuess, setCurrentGuess] = useState('')
+    const [currentGuess, setCurrentGuess] = useState<string>('')
     const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(correctWord.length).fill(new StatusChar('', LetterStatus.UNUSED))))
     const [keyboardContent, setKeyboardContent] = useState<StatusChar[][]>(KeyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
+    const [showSettings, setShowSettings] = useState<boolean>(true)
 
     const pressKey = (key: string) => {
         if (!keyboardEnabled) return
@@ -128,17 +129,20 @@ const App = () => {
         setKeyboardContent(KeyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
     }
 
+    const toggleSettings = () => {
+        setShowSettings(!showSettings)
+    }
+
     return (
         <div className='app'>
-            <div className='game-area'>
-                <Header/>
+            <div className='game-window'>
+                <Header toggleSettings={toggleSettings}/>
                 <GuessGrid guessGridContent={guessGridContent}/>
                 <MessageBar message={message}/>
                 <Keyboard keyboardContent={keyboardContent}
                           pressKey={pressKey}/>
             </div>
-            <SettingsPanel wordLength={wordLength}
-                           resetGame={resetGame}/>
+            {showSettings ? <SettingsPanel wordLength={wordLength} resetGame={resetGame}/> : <></>}
         </div>
     )
 }

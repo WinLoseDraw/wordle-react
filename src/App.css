@@ -1,8 +1,9 @@
 .app {
+    height: 100vh;
     display: flex;
     flex-direction: row;
 }
 
-.game-area {
+.game-window {
     flex: 1;
 }
