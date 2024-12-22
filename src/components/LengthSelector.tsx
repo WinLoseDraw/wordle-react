@@ -16,10 +16,12 @@ const LengthSelector = ({wordLength, resetGame}: {
                     <div className='button-grid-row' key={row}>
                         {[...Array(numCols)].map((_, col) => {
                             const buttonLength = row * numCols + col + start
+                            const selectedButton = (buttonLength === wordLength)
                             return (
                                 <button key={col}
+                                        disabled={selectedButton}
                                         style={{
-                                            backgroundColor: (buttonLength === wordLength) ?
+                                            backgroundColor: selectedButton ?
                                                 Colors.correctPosition :
                                                 Colors.unselectedButtonGrid
                                         }}
