@@ -1,9 +1,31 @@
-.header {
+.my-header {
     height: 80px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+}
+
+.filler {
+    width: 48px;
+}
+
+.my-header h1 {
     color: white;
-    font-size: 18px;
+    font-size: 32px;
+}
+
+.my-header button {
+    width: 48px;
+    background-color: transparent;
+    border: none;
+}
+
+.settings-icon {
+    width: 28px;
+    height: 28px;
+    background-image: url("../assets/settings-icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
 }

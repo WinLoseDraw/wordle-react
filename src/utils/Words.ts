@@ -1,9 +1,4 @@
 const wordData = new Map<number, string[]>([
-    [3, ["cat", "dog", "bat", "rat", "sun", "fan", "top", "zip", "box", "cup",
-        "man", "van", "hat", "log", "fig", "net", "peg", "run", "bag", "bug",
-        "bat", "hip", "ant", "gem", "jaw", "lit", "orb", "pit", "sip", "tip",
-        "elk", "fig", "guy", "hut", "ivy", "jot", "kit", "lid", "mop", "nap"
-    ]],
     [4, ["tree", "book", "fish", "door", "lamp", "wolf", "frog", "ship", "star", "moon",
         "time", "cake", "love", "fire", "wind", "rain", "snow", "line", "bear", "king",
         "hill", "bear", "frog", "gold", "milk", "blue", "sand", "rock", "path", "cold",

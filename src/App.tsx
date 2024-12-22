@@ -7,6 +7,7 @@ import {LetterStatus, StatusChar} from "./utils/StatusChar.ts";
 import KeyboardLayout from "./utils/KeyboardLayout.ts";
 import MessageBar from "./components/MessageBar.tsx";
 import {getRandomWord} from "./utils/Words.ts";
+import SettingsPanel from "./components/SettingsPanel.tsx";
 
 const App = () => {
     const guessRows = 6
@@ -16,8 +17,24 @@ const App = () => {
     const [currentGuessNumber, setCurrentGuessNumber] = useState<number>(1)
     const [keyboardEnabled, setKeyboardEnabled] = useState<boolean>(true)
     const [message, setMessage] = useState<string>('')
+    const [currentGuess, setCurrentGuess] = useState('')
     const [guessGridContent, setGuessGridContent] = useState<StatusChar[][]>([...Array(guessRows)].map(() => Array(correctWord.length).fill(new StatusChar('', LetterStatus.UNUSED))))
     const [keyboardContent, setKeyboardContent] = useState<StatusChar[][]>(KeyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
+
+    const pressKey = (key: string) => {
+        if (!keyboardEnabled) return
+        if (key === 'Enter') {
+            if (currentGuess.length < wordLength) return
+            makeGuess(currentGuess)
+            setCurrentGuess('')
+            return
+        }
+        if (key === 'Delete' && currentGuess.length === 0) return
+        const updatedGuess = (key === 'Delete') ? currentGuess.slice(0, -1) : currentGuess + key
+        if (updatedGuess.length > wordLength) return
+        setCurrentGuess(updatedGuess)
+        updateGuessGridContent(currentGuessNumber, updatedGuess)
+    }
 
     const validateGuess = (correctWord: string, guessWord: string) => {
         const result = guessWord.split('').map(char => new StatusChar(char, LetterStatus.UNUSED))
@@ -100,18 +117,29 @@ const App = () => {
         setCurrentGuessNumber(currentGuessNumber + 1)
     }
 
+    const resetGame = (length: number) => {
+        setWordLength(length)
+        setCorrectWord(getRandomWord(length))
+        setCurrentGuessNumber(1)
+        setKeyboardEnabled(true)
+        setMessage('')
+        setCurrentGuess('')
+        setGuessGridContent([...Array(guessRows)].map(() => Array(length).fill(new StatusChar('', LetterStatus.UNUSED))))
+        setKeyboardContent(KeyboardLayout.map(row => row.map(key => new StatusChar(key, LetterStatus.UNUSED))))
+    }
+
     return (
-        <>
-            <Header/>
-            <GuessGrid guessGridContent={guessGridContent}/>
-            <MessageBar message={message}/>
-            <Keyboard keyboardContent={keyboardContent}
-                      keyboardEnabled={keyboardEnabled}
-                      currentGuessNumber={currentGuessNumber}
-                      wordLength={wordLength}
-                      updateGuessGridContent={updateGuessGridContent}
-                      makeGuess={makeGuess}/>
-        </>
+        <div className='app'>
+            <div className='game-area'>
+                <Header/>
+                <GuessGrid guessGridContent={guessGridContent}/>
+                <MessageBar message={message}/>
+                <Keyboard keyboardContent={keyboardContent}
+                          pressKey={pressKey}/>
+            </div>
+            <SettingsPanel wordLength={wordLength}
+                           resetGame={resetGame}/>
+        </div>
     )
 }
 

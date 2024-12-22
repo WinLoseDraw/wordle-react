@@ -1,16 +1,12 @@
 import './Keyboard.css'
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {LetterStatus, StatusChar} from "../utils/StatusChar.ts";
 import Colors from "../utils/Colors.ts";
 
 
-const Keyboard = ({keyboardContent, keyboardEnabled, currentGuessNumber, wordLength, updateGuessGridContent, makeGuess}: {
+const Keyboard = ({keyboardContent, pressKey}: {
     keyboardContent: StatusChar[][],
-    keyboardEnabled: boolean,
-    currentGuessNumber: number,
-    wordLength: number,
-    updateGuessGridContent: (guessNumber: number, guessWord: string) => void,
-    makeGuess: (guessWord: string) => void,
+    pressKey: (key: string) => void,
 }) => {
 
     useEffect(() => {
@@ -30,22 +26,6 @@ const Keyboard = ({keyboardContent, keyboardEnabled, currentGuessNumber, wordLen
         }
     })
 
-    const [currentGuess, setCurrentGuess] = useState('')
-
-    const pressKey = (key: string) => {
-        if (!keyboardEnabled) return
-        if (key === 'Enter') {
-            if (currentGuess.length < wordLength) return
-            makeGuess(currentGuess)
-            setCurrentGuess('')
-            return
-        }
-        if (key === 'Delete' && currentGuess.length === 0) return
-        const updatedGuess = (key === 'Delete') ? currentGuess.slice(0, -1) : currentGuess + key
-        if (updatedGuess.length > wordLength) return
-        setCurrentGuess(updatedGuess)
-        updateGuessGridContent(currentGuessNumber, updatedGuess)
-    }
 
     const getKeyColor = (status: LetterStatus) => {
         switch (status) {
@@ -65,7 +45,8 @@ const Keyboard = ({keyboardContent, keyboardEnabled, currentGuessNumber, wordLen
             {keyboardContent.map((keyboardRow, index) => (
                 <div className='keyboard-row' key={index}>
                     {keyboardRow.map((keyboardKey, index) => (
-                        <button className='keyboard-key' key={index} style={{backgroundColor: getKeyColor(keyboardKey.status)}}
+                        <button className='keyboard-key' key={index}
+                                style={{backgroundColor: getKeyColor(keyboardKey.status)}}
                                 onClick={() => pressKey(keyboardKey.char)}>{keyboardKey.char}</button>
                     ))}
                 </div>
